@@ -12,6 +12,7 @@ jobs:
       # Unique URL path for each workflow run attempt
       HTML_REPORT_URL_PATH: reports/${{ github.head_ref }}/${{ github.run_id }}/${{ github.run_attempt }}
       BRANCH_REPORTS_DIR: reports/${{ github.head_ref }}
+      HEAD_REF: ${{ github.head_ref }}
     steps:
       - name: Checkout GitHub Pages Branch
         uses: actions/checkout@v4
@@ -37,7 +38,7 @@ jobs:
         run: |
           rm -rf $BRANCH_REPORTS_DIR
           git add .
-          git commit -m "workflow: remove all reports for branch ${{ github.head_ref }}"
+          git commit -m "workflow: remove all reports for branch $HEAD_REF"
       - name: Download zipped HTML report
         uses: actions/download-artifact@v4
         with:
@@ -49,7 +50,7 @@ jobs:
         # this is necessary when this job running at least twice at the same time (e.g. through two pushes at the same time)
         run: |
           git add .
-          git commit -m "workflow: add HTML report for run-id ${{ github.run_id }} (attempt:  ${{ github.run_attempt }})"
+          git commit -m "workflow: add HTML report for run-id ${{ github.run_id }} (attempt:  ${{ github.run_attempt }}) on branch $HEAD_REF"
 
           while true; do
             git pull --rebase
